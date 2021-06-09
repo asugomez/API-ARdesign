@@ -138,13 +138,18 @@ ALTER TABLE `objects`
 --
 -- Index pour la table `furniture`
 --
-ALTER TABLE `furniture`
+ALTER TABLE `furnitures`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `walls`
+--
+ALTER TABLE `walls`
+  ADD PRIMARY KEY (`id`);
+--
 -- Index pour la table `standardFurnitures`
 --
-ALTER TABLE `tandardFurnitures`
+ALTER TABLE `standardFurnitures`
   ADD PRIMARY KEY (`id`);
 
 
@@ -165,17 +170,6 @@ ALTER TABLE `users`
 --
 ALTER TABLE `objects`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT pour la table `furnitures`
---
-ALTER TABLE `furnitures`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT pour la table `furnitures`
---
-ALTER TABLE `walls`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
---
 
 -- AUTO_INCREMENT pour la table `standardFurnitures`
 --
