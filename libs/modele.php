@@ -52,8 +52,8 @@ function mkHash($idUser) {
 	return $hash; 
 }
 
-function mkUser($pseudo, $pass){
-	$SQL = "INSERT INTO users(pseudo,pass) VALUES('$pseudo', '$pass')";
+function mkUser($pseudo, $mail, $pass){
+	$SQL = "INSERT INTO users(pseudo,mail,pass) VALUES('$pseudo', '$mail', '$pass')";
 	$idUser = SQLInsert($SQL);
 	mkHash($idUser); 
 	return $idUser; 
@@ -70,16 +70,16 @@ function chgPassword($idUser,$pass) {
 	return SQLUpdate($SQL);
 }
 
-// Lists ///////////////////////////////////////////////////
+// Furniture ///////////////////////////////////////////////////
 
 
-function getLists(){
-	$SQL = "SELECT l.id, l.label, u.pseudo FROM lists l INNER JOIN users u ON l.idUser = u.id"; 
+function getFurnitures(){
+	$SQL = "SELECT f.id, u.pseudo, f.width, f.height, f.length FROM furnitures f INNER JOIN users u ON f.idUser = u.id"; 
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function getList($id,$idUser=false){
-	$SQL = "SELECT id,label FROM lists WHERE id='$id'"; 
+function getFurniture($id,$idUser=false){
+	$SQL = "SELECT id, width, height, length FROM furnitures WHERE id='$id'"; 
 	if ($idUser)
 		$SQL .= " AND idUser='$idUser'"; 
 	$rs = parcoursRs(SQLSelect($SQL));
@@ -87,72 +87,85 @@ function getList($id,$idUser=false){
 	else return array();
 }
 
-function getListsUser($idUser){
-	$SQL = "SELECT id,label FROM lists WHERE idUser='$idUser'"; 
+function getFurnituresUser($idUser){
+	$SQL = "SELECT id, width, heigh, length FROM furnitures WHERE idUser='$idUser'"; 
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function mkList($idUser, $label){
-	$SQL = "INSERT INTO lists(idUser,label) VALUES('$idUser', '$label')";
+function mkFurniture($idUser, $width, $height, $length){
+	$SQL = "INSERT INTO furnitures(idUser, width, height, length) VALUES('$idUser', '$width', '$height', '$length')";
 	return SQLInsert($SQL);
 }
 
-function rmList($idList, $idUser=false) {
-	$SQL = "DELETE FROM lists WHERE id='$idList'";
+function rmFurniture($id, $idUser=false) {
+	$SQL = "DELETE FROM furnitures WHERE id='$id'";
 	if ($idUser) $SQL .= " AND idUser='$idUser'"; 
 	return SQLDelete($SQL);
 }
 
-function chgListLabel($idList,$label, $idUser=false) {
-	$SQL = "UPDATE lists SET label='$label' WHERE id='$idList'";
-	if ($idUser) $SQL .= " AND idUser='$idUser'";
-	return SQLUpdate($SQL);
-}
 
-// Items ///////////////////////////////////////////////////
+// Walls///////////////////////////////////////////////////
 
-function getItems($idList) {
-	$SQL = "SELECT id,label,url,checked FROM items WHERE idList='$idList'"; 
+
+
+function getWalls(){
+	$SQL = "SELECT w.id, u.pseudo, w.width, w.height FROM walls w INNER JOIN users u ON w.idUser = u.id"; 
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function getItem($idItem, $idList=false) {
-	$SQL = "SELECT id,label,checked,url FROM items WHERE id='$idItem'"; 
-	if ($idList) $SQL .= " AND idList='$idList'";
+function getWall($id,$idUser=false){
+	$SQL = "SELECT id, width, height FROM walls WHERE id='$id'"; 
+	if ($idUser)
+		$SQL .= " AND idUser='$idUser'"; 
+	$rs = parcoursRs(SQLSelect($SQL));
+	if (count($rs)) return $rs[0]; 
+	else return array();
+}
 
+function getWallUser($idUser){
+	$SQL = "SELECT id, width, heigh FROM walls WHERE idUser='$idUser'"; 
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function mkWall($idUser, $width, $height){
+	$SQL = "INSERT INTO walls(idUser, width, height) VALUES('$idUser', '$width', '$height')";
+	return SQLInsert($SQL);
+}
+
+function rmWall($id, $idUser=false) {
+	$SQL = "DELETE FROM walls WHERE id='$id'";
+	if ($idUser) $SQL .= " AND idUser='$idUser'"; 
+	return SQLDelete($SQL);
+}
+
+
+// Standard Furnitures /////////////////////////
+
+function getStandardFurnitures(){
+	$SQL = "SELECT * FROM standardFurnitures"; 
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getStandardFurniture($id){
+	$SQL = "SELECT * FROM standardFurnitures WHERE id='$id'"; 
 	$rs = parcoursRs(SQLSelect($SQL));
 	if (count($rs)) return $rs[0]; 
 	else return array();
 }
 
 
-function rmItem($idItem,$idList) {
-	$SQL = "DELETE FROM items WHERE id='$idItem' AND idList='$idList'";
-	return SQLDelete($SQL);
-}
-
-function mkItem($idList, $label,$url=false){
-	if ($url)
-		$SQL = "INSERT INTO items(idList,label,url) VALUES('$idList', '$label','$url')";
-	else 
-		$SQL = "INSERT INTO items(idList,label) VALUES('$idList', '$label')";
+function mkStandardFurniture($width, $height, $length, $url){
+	$SQL = "INSERT INTO standardFurnitures(width, height, length, url) VALUES('$width', '$height', '$length', '$url')";
 	return SQLInsert($SQL);
 }
 
-function chgItemLabel($idItem,$label,$idList=false) {
-	$SQL = "UPDATE items SET label='$label' WHERE id='$idItem'";
-	if ($idList) $SQL .=  " AND idList='$idList'"; 
-	return SQLUpdate($SQL);
+function rmStandardFurniture($id) {
+	$SQL = "DELETE FROM standardFurnitures WHERE id='$id'";
+	return SQLDelete($SQL);
 }
 
-function chgItemUrl($idItem,$url,$idList=false) {
-	$SQL = "UPDATE items SET url='$url' WHERE id='$idItem'";
-	if ($idList) $SQL .=  " AND idList='$idList'"; 
-	return SQLUpdate($SQL);
-}
-
-function checkItem($idItem, $idList, $checkValue=1) {
-	$SQL = "UPDATE items SET checked='$checkValue' WHERE id='$idItem' AND idList='$idList'";
+function chgStandardFurnitureUrl($id, $url) {
+	$SQL = "UPDATE standardFurnitures SET url='$url' WHERE id='$id'";
 	return SQLUpdate($SQL);
 }
 

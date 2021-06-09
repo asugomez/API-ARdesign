@@ -45,6 +45,8 @@ if (valider("request")) {
 	$idEntite1 = false;
 	$entite2 = false; 
 	$idEntite2 = false; 
+	//$entite3 = false;
+	//$idEntite3 = false;
 
 	if (count($requestParts) >0) {
 		$entite1 = $requestParts[0];
@@ -84,12 +86,13 @@ if (valider("request")) {
 	$action = $method; 
 	if ($entite1) $action .= "_$entite1";
 	if ($entite2) $action .= "_$entite2";
+	//if ($entite3) $action .= "_$entite3";
  
 	debug("action", $action);
 
 	if ($action == "POST_authenticate") {
 		if ($user = valider("user"))
-		if ($password = valider("password")) {
+		if ($password = valider("pass")) {
 			if ($hash = validerUser($user, $password)) {
 				$data["hash"] = $hash;
 				$data["success"] = true;
@@ -104,72 +107,103 @@ if (valider("request")) {
 	{
 		// On connaît $connectedId
 		switch ($action) {
+			// GET
 
 			case 'GET_users' :			
 				if ($idEntite1) {
-					// GET /api/users/<id>
+					// GET /AR-design/users/<id>
 					$data["user"] = getUser($idEntite1);
 					$data["success"] = true;
 					$data["status"] = 200; 
 				} 
 				else {
-					// GET /api/users
+					// GET /AR-design/users
 					$data["users"] = getUsers();
 					$data["success"] = true;
 					$data["status"] = 200;
 				}
 			break; 
 
-			case 'GET_users_lists' : 
-				if ($idEntite1)
-				if ($idEntite2) {
-					// GET /api/users/<id>/lists/<id>
-					$data["list"] = getList($idEntite2, $idEntite1);
-					$data["success"] = true;
-					$data["status"] = 200;
-				} else {
-					// GET /api/users/<id>/lists
-					$data["lists"] = getListsUser($idEntite1);
-					$data["success"] = true;
-					$data["status"] = 200;
-				}
-			break;
 
-			case 'GET_lists' : 
+			case 'GET_furnitures' : 
 				if ($idEntite1){
-					// GET /api/lists/<id>
-					// TODO : vérifier user ?
-					$data["list"] = getList($idEntite1,$connectedId);
+					// GET /AR-design/furnitures/<id>
+					$data["object"] = getFurniture($idEntite1,$connectedId);
 					$data["success"] = true;
 					$data["status"] = 200;
 				} else {
-					// GET /api/lists
-					// Les listes de l'utilisateur connecté
-					$data["lists"] = getListsUser($connectedId);
+					// GET /AR-design/furnitures
+					$data["objects"] = getFurnitures();
 					$data["success"] = true;
 					$data["status"] = 200; 
 				}
 			break;
 
-			case 'GET_lists_items' : 
+			case 'GET_users_furnitures' : 
 				if ($idEntite1)
 				if ($idEntite2) {
-					// GET /api/lists/<id>/items/<id>
-					$data["item"] = getItem($idEntite2, $idEntite1);
+					// GET /AR-design/users/<id>/furnitures/<id>
+					$data["object"] = getFurniture($idEntite2, $idEntite1);
 					$data["success"] = true;
 					$data["status"] = 200;
 				} else {
-					// GET /api/lists<id>/items
-					$data["items"] = getItems($idEntite1);
+					// GET /AR-design/users/<id>/furnitures
+					$data["objects"] = getFurnituresUser($idEntite1);
 					$data["success"] = true;
-					$data["status"] = 200;		 
+					$data["status"] = 200;
 				}
-			break; 
+			break;
+
+			case 'GET_walls' : 
+				if ($idEntite1){
+					// GET /AR-design/walls/<id>
+					$data["object"] = getWall($idEntite1,$connectedId);
+					$data["success"] = true;
+					$data["status"] = 200;
+				} else {
+					// GET /AR-design/walls
+					$data["objects"] = getWalls();
+					$data["success"] = true;
+					$data["status"] = 200; 
+				}
+			break;
+
+			case 'GET_users_walls' : 
+				if ($idEntite1)
+				if ($idEntite2) {
+					// GET /AR-design/users/<id>/walls/<id>
+					$data["object"] = getWall($idEntite2, $idEntite1);
+					$data["success"] = true;
+					$data["status"] = 200;
+				} else {
+					// GET /AR-design/users/<id>/walls
+					$data["objects"] = getWallsUser($idEntite1);
+					$data["success"] = true;
+					$data["status"] = 200;
+				}
+			break;
+
+			case 'GET_standardFurnitures' : 
+				if ($idEntite1){
+					// GET /AR-design/standardFurnitures/<id>
+					$data["object"] = getStandardFurniture($idEntite1);
+					$data["success"] = true;
+					$data["status"] = 200;
+				} else {
+					// GET /AR-design/standardFurnitures
+					$data["objects"] = getStandardFurnitures();
+					$data["success"] = true;
+					$data["status"] = 200; 
+				}
+			break;
+			
+
+
 
 			case 'POST_users' : 
 				// POST /api/users?pseudo=&pass=...
 				if ($pseudo = valider("pseudo"))
-				if ($pass = valider("pass")) {
+				if ($pass = valider("password")) {
 					$id = mkUser($pseudo, $pass); 
 					$data["user"] = getUser($id);
 					$data["success"] = true;

@@ -20,29 +20,6 @@ SET time_zone = "+00:00";
 -- Base de données :  `ardesign`
 --
 
-
--- --------------------------------------------------------
-
---
--- Structure de la table `objects`
---
-
-CREATE TABLE `objects` (
-  `id` int(11) NOT NULL,
-  `idUser` int(11) NOT NULL,
-  `typeObject`varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Contenu de la table `objects`
---
-
-INSERT INTO `objects` (`id`, `idUser`,`typeObject`) VALUES
-(1, 1, 'furniture'),
-(2, 1, 'furniture'),
-(3, 1, 'wall'),
-(4, 1, 'wall');
-
 -- --------------------------------------------------------
 
 --
@@ -51,14 +28,15 @@ INSERT INTO `objects` (`id`, `idUser`,`typeObject`) VALUES
 
 CREATE TABLE `furnitures` (
   `id` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
   `width` varchar(100) NOT NULL,
   `height` varchar(100) NOT NULL,
   `length` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `furnitures` (`id`,  `width`, `height`, `length`) VALUES
-(1, '60', '40', '120'),
-(2, '30', '200', '200');
+INSERT INTO `furnitures` (`id`, `idUser`, `width`, `height`, `length`) VALUES
+(1, 1, '60', '40', '120'),
+(2, 1, '30', '200', '200');
 
 -- --------------------------------------------------------
 
@@ -68,13 +46,14 @@ INSERT INTO `furnitures` (`id`,  `width`, `height`, `length`) VALUES
 
 CREATE TABLE `walls` (
   `id` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
   `width` varchar(100) NOT NULL,
   `height` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `walls` (`id`,  `width`, `height`) VALUES
-(3, '80', '120'),
-(4, '75', '38.8');
+INSERT INTO `walls` (`id`, `idUser`, `width`, `height`) VALUES
+(3, 2, '80', '120'),
+(4, 1, '75', '38.8');
 
 -- --------------------------------------------------------
 
@@ -109,10 +88,9 @@ INSERT INTO `standardFurnitures` (`id`, `width`, `height`, `length`, `url`) VALU
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `lastname` varchar(100) NOT NULL,
-  `mail`varchar(200) NOT NULL,
-  `password` varchar(100) NOT NULL,
+  `pseudo` varchar(100) NOT NULL,
+  `mail` varchar(200) NOT NULL,
+  `pass` varchar(100) NOT NULL,
   `hash` varchar(100) NOT NULL DEFAULT 'hash'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -120,20 +98,13 @@ CREATE TABLE `users` (
 -- Contenu de la table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `lastname`, `mail`, `password`, `hash`) VALUES
-(1, 'tom', 'wu', 'tom.wu@gmail.com', 'web', '10bca641466d835d3db9be02ab6e1d08'),
-(2, 'isa', 'gomez','isa.gomez@gmail.com', 'bdd', 'b9edda3aacebbf26bdfb708540070c05');
+INSERT INTO `users` (`id`, `pseudo`, `mail`, `pass`, `hash`) VALUES
+(1, 'tom','tom.wu@gmail.com', 'web', '10bca641466d835d3db9be02ab6e1d08'),
+(2, 'isa','isa.gomez@gmail.com', 'bdd', 'b9edda3aacebbf26bdfb708540070c05');
 
 --
 -- Index pour les tables exportées
 --
-
---
--- Index pour la table `objects`
---
-ALTER TABLE `objects`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idUser` (`idUser`);
 
 --
 -- Index pour la table `furniture`
@@ -152,13 +123,12 @@ ALTER TABLE `walls`
 ALTER TABLE `standardFurnitures`
   ADD PRIMARY KEY (`id`);
 
-
 --
 -- Index pour la table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
-
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE(`pseudo`);
 
 
 --
@@ -166,10 +136,15 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT pour la table `objects`
+-- AUTO_INCREMENT pour la table `furnitures`
 --
-ALTER TABLE `objects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+ALTER TABLE `furnitures`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT pour la table `walls`
+--
+ALTER TABLE `walls`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 -- AUTO_INCREMENT pour la table `standardFurnitures`
 --
@@ -187,22 +162,16 @@ ALTER TABLE `users`
 --
 
 --
--- Contraintes pour la table `objects`
---
-ALTER TABLE `objects`
-  ADD CONSTRAINT `FK_users` FOREIGN KEY (`idUser`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
 -- Contraintes pour la table `furnitures`
 --
 ALTER TABLE `furnitures`
-  ADD CONSTRAINT `FK_objects` FOREIGN KEY (`id`) REFERENCES `objects` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_users_furnitures` FOREIGN KEY (`idUser`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Contraintes pour la table `furnitures`
+-- Contraintes pour la table `walls`
 --
 ALTER TABLE `walls`
-  ADD CONSTRAINT `FK_objects` FOREIGN KEY (`id`) REFERENCES `objects` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_users_walls` FOREIGN KEY (`idUser`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
