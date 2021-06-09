@@ -6,7 +6,7 @@ header("Access-Control-Allow-Origin: *");
 
 $data = array("version"=>1);
 
-// Routes : /api/...
+// Routes : http://localhost/~asugomez/AR-design/api/
 
 $method = $_SERVER["REQUEST_METHOD"];
 debug("method",$method);
@@ -92,7 +92,7 @@ if (valider("request")) {
 
 	if ($action == "POST_authenticate") {
 		if ($user = valider("user"))
-		if ($password = valider("pass")) {
+		if ($password = valider("password")) {
 			if ($hash = validerUser($user, $password)) {
 				$data["hash"] = $hash;
 				$data["success"] = true;
@@ -111,13 +111,13 @@ if (valider("request")) {
 
 			case 'GET_users' :			
 				if ($idEntite1) {
-					// GET /AR-design/users/<id>
+					// GET /AR-design/api/users/<id>
 					$data["user"] = getUser($idEntite1);
 					$data["success"] = true;
 					$data["status"] = 200; 
 				} 
 				else {
-					// GET /AR-design/users
+					// GET /AR-design/api/users
 					$data["users"] = getUsers();
 					$data["success"] = true;
 					$data["status"] = 200;
@@ -127,13 +127,13 @@ if (valider("request")) {
 
 			case 'GET_furnitures' : 
 				if ($idEntite1){
-					// GET /AR-design/furnitures/<id>
-					$data["object"] = getFurniture($idEntite1,$connectedId);
+					// GET /AR-design/api/furnitures/<id>
+					$data["furniture"] = getFurniture($idEntite1,$connectedId);
 					$data["success"] = true;
 					$data["status"] = 200;
 				} else {
-					// GET /AR-design/furnitures
-					$data["objects"] = getFurnitures();
+					// GET /AR-design/api/furnitures
+					$data["furnitures"] = getFurnitures();
 					$data["success"] = true;
 					$data["status"] = 200; 
 				}
@@ -142,13 +142,13 @@ if (valider("request")) {
 			case 'GET_users_furnitures' : 
 				if ($idEntite1)
 				if ($idEntite2) {
-					// GET /AR-design/users/<id>/furnitures/<id>
-					$data["object"] = getFurniture($idEntite2, $idEntite1);
+					// GET /AR-design/api/users/<id>/furnitures/<id>
+					$data["furniture"] = getFurniture($idEntite2, $idEntite1);
 					$data["success"] = true;
 					$data["status"] = 200;
 				} else {
-					// GET /AR-design/users/<id>/furnitures
-					$data["objects"] = getFurnituresUser($idEntite1);
+					// GET /AR-design/api/users/<id>/furnitures
+					$data["furnitures"] = getFurnituresUser($idEntite1);
 					$data["success"] = true;
 					$data["status"] = 200;
 				}
@@ -156,13 +156,13 @@ if (valider("request")) {
 
 			case 'GET_walls' : 
 				if ($idEntite1){
-					// GET /AR-design/walls/<id>
-					$data["object"] = getWall($idEntite1,$connectedId);
+					// GET /AR-design/api/walls/<id>
+					$data["wall"] = getWall($idEntite1,$connectedId);
 					$data["success"] = true;
 					$data["status"] = 200;
 				} else {
-					// GET /AR-design/walls
-					$data["objects"] = getWalls();
+					// GET /AR-design/api/walls
+					$data["walls"] = getWalls();
 					$data["success"] = true;
 					$data["status"] = 200; 
 				}
@@ -171,13 +171,13 @@ if (valider("request")) {
 			case 'GET_users_walls' : 
 				if ($idEntite1)
 				if ($idEntite2) {
-					// GET /AR-design/users/<id>/walls/<id>
-					$data["object"] = getWall($idEntite2, $idEntite1);
+					// GET /AR-design/api/users/<id>/walls/<id>
+					$data["wall"] = getWall($idEntite2, $idEntite1);
 					$data["success"] = true;
 					$data["status"] = 200;
 				} else {
-					// GET /AR-design/users/<id>/walls
-					$data["objects"] = getWallsUser($idEntite1);
+					// GET /AR-design/api/users/<id>/walls
+					$data["walls"] = getWallsUser($idEntite1);
 					$data["success"] = true;
 					$data["status"] = 200;
 				}
@@ -185,42 +185,60 @@ if (valider("request")) {
 
 			case 'GET_standardFurnitures' : 
 				if ($idEntite1){
-					// GET /AR-design/standardFurnitures/<id>
-					$data["object"] = getStandardFurniture($idEntite1);
+					// GET /AR-design/api/standardFurnitures/<id>
+					$data["standardFurnitures"] = getStandardFurniture($idEntite1);
 					$data["success"] = true;
 					$data["status"] = 200;
 				} else {
-					// GET /AR-design/standardFurnitures
-					$data["objects"] = getStandardFurnitures();
+					// GET /AR-design/api/standardFurnitures
+					$data["standardFurnitures"] = getStandardFurnitures();
 					$data["success"] = true;
 					$data["status"] = 200; 
 				}
 			break;
 			
-
-
+			// POST 
 
 			case 'POST_users' : 
-				// POST /api/users?pseudo=&pass=...
+				// POST /api/users?pseudo=&pass=&mail...
 				if ($pseudo = valider("pseudo"))
-				if ($pass = valider("password")) {
-					$id = mkUser($pseudo, $pass); 
+				if ($pass = valider("password")) 
+				if ($mail = valider("mail")){
+					$id = mkUser($pseudo, $mail,$pass); 
 					$data["user"] = getUser($id);
 					$data["success"] = true;
 					$data["status"] = 201;
 				}
 			break; 
 
-			case 'POST_users_lists' :
-				// POST /api/users/<id>/lists?label=...
+
+
+			case 'POST_users_furnitures' :
+				// POST /api/users/<id>/furnitures?width=&height=&legnth=...
 				if ($idEntite1)
-				if ($label = valider("label")) {
-					$id = mkList($idEntite1, $label); 
-					$data["list"] = getList($id);
+				if ($width = valider("width"))
+				if ($height = valider("height"))
+				if ($length = valider("length")){
+					$id = mkFurniture($idEntite1, $width, $height, $length); 
+					$data["furniture"] = getFurniture($id);
 					$data["success"] = true;
 					$data["status"] = 201;
 				}
 			break; 
+
+			case 'POST_users_walls' :
+				// POST /api/users/<id>/walls?width=&height=&
+				if ($idEntite1)
+				if ($width = valider("width"))
+				if ($height = valider("height")){
+					$id = mkWall($idEntite1, $width, $height); 
+					$data["wall"] = getWall($id);
+					$data["success"] = true;
+					$data["status"] = 201;
+				}
+			break; 
+
+			//todo
 
 			case 'POST_lists_items' :
 				// POST /api/lists/<id>/items?label=...

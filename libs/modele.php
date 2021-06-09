@@ -88,7 +88,7 @@ function getFurniture($id,$idUser=false){
 }
 
 function getFurnituresUser($idUser){
-	$SQL = "SELECT id, width, heigh, length FROM furnitures WHERE idUser='$idUser'"; 
+	$SQL = "SELECT id, width, height, length FROM furnitures WHERE idUser='$idUser'"; 
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -122,8 +122,8 @@ function getWall($id,$idUser=false){
 	else return array();
 }
 
-function getWallUser($idUser){
-	$SQL = "SELECT id, width, heigh FROM walls WHERE idUser='$idUser'"; 
+function getWallsUser($idUser){
+	$SQL = "SELECT id, width, height FROM walls WHERE idUser='$idUser'"; 
 	return parcoursRs(SQLSelect($SQL));
 }
 
