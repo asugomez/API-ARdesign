@@ -3,8 +3,8 @@
 
 // MACHINE LINUX 
 $BDD_host="localhost";
-$BDD_user="admin";
-$BDD_password="mysql"; // vide sous windows
-$BDD_base="todo-api";
+$BDD_user="root";
+$BDD_password="zurigato"; 
+$BDD_base="ARdesign";
 
 ?>
