@@ -97,6 +97,32 @@ function mkFurniture($idUser, $width, $height, $length){
 	return SQLInsert($SQL);
 }
 
+function chgFurniture($id, $idUser, $width=false, $height=false, $length=false){
+	$SQL =  "UPDATE walls SET `width`='$width'";//, `height`='$height'";//, `len`='$length'";
+	/*if($width and $height and $length)
+		$SQL .= " SET width='$width', height='$height', length='$length'";
+	else if($width and $height)
+		$SQL .= " SET width='$width', height='$height'" ;
+	else if($width and$length)
+		$SQL .= " SET width='$width', length='$length'" ;
+	else if($height and$length)
+		$SQL .= " SET height='$height', length='$length'" ;
+	else if($width)
+		$SQL .= " SET width='$width'" ;
+	else if($height)
+		$SQL .= " SET height='$height'" ;
+	else if($length)
+		$SQL .= " SET length='$length'" ;*/
+	$SQL .= " WHERE id='$id' AND idUser='$idUser'";
+	return SQLUpdate($SQL);
+}
+
+function chgWidthFurniture($id, $idUser, $width){
+	$SQL =  "UPDATE walls SET `width`='$width'";
+	$SQL .= " WHERE id='$id' AND idUser='$idUser'";
+	return SQLUpdate($SQL);
+}
+
 function rmFurniture($id, $idUser=false) {
 	$SQL = "DELETE FROM furnitures WHERE id='$id'";
 	if ($idUser) $SQL .= " AND idUser='$idUser'"; 
@@ -130,6 +156,18 @@ function getWallsUser($idUser){
 function mkWall($idUser, $width, $height){
 	$SQL = "INSERT INTO walls(idUser, width, height) VALUES('$idUser', '$width', '$height')";
 	return SQLInsert($SQL);
+}
+
+function chgWall($id, $idUser, $width=false, $height=false){
+	$SQL =  "UPDATE walls";
+	if($width and $height)
+		$SQL .= " SET width='$width', height='$height'";
+	else if($width)
+		$SQL .= " SET width='$width'" ;
+	else if($height)
+		$SQL .= " SET height='$height'" ;
+	$SQL .= " WHERE id='$id' AND idUser='$idUser'";
+	return SQLUpdate($SQL);
 }
 
 function rmWall($id, $idUser=false) {

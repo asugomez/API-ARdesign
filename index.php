@@ -200,7 +200,7 @@ if (valider("request")) {
 			// POST 
 
 			case 'POST_users' : 
-				// POST /api/users?pseudo=&pass=&mail...
+				// POST /AR-design/api/users?pseudo=&pass=&mail...
 				if ($pseudo = valider("pseudo"))
 				if ($pass = valider("password")) 
 				if ($mail = valider("mail")){
@@ -211,10 +211,8 @@ if (valider("request")) {
 				}
 			break; 
 
-
-
 			case 'POST_users_furnitures' :
-				// POST /api/users/<id>/furnitures?width=&height=&legnth=...
+				// POST /AR-design/api/users/<id>/furnitures?width=&height=&legnth=...
 				if ($idEntite1)
 				if ($width = valider("width"))
 				if ($height = valider("height"))
@@ -227,7 +225,7 @@ if (valider("request")) {
 			break; 
 
 			case 'POST_users_walls' :
-				// POST /api/users/<id>/walls?width=&height=&
+				// POST /AR-design/api/users/<id>/walls?width=&height=&
 				if ($idEntite1)
 				if ($width = valider("width"))
 				if ($height = valider("height")){
@@ -238,29 +236,23 @@ if (valider("request")) {
 				}
 			break; 
 
-			//todo
+		
 
-			case 'POST_lists_items' :
-				// POST /api/lists/<id>/items?label=...
-				if ($idEntite1)
-				if ($label = valider("label")) {
-					$url = valider("url"); 
-					$id = mkItem($idEntite1, $label,$url);					
-					$data["item"] = getItem($id,$idEntite1);
+			case 'POST_standardFurnitures' :
+				// POST /AR-design/api/standardFurnitures?width=&height=&length=&url=
+				//if ($idEntite1)
+				if ($width = valider("width"))
+				if ($height = valider("height"))
+				if ($length = valider("length"))
+				if ($url = valider("url")){
+					$id = mkStandardFurniture($width, $height, $length, $url);			
+					$data["standardFurniture"] = getStandardFurniture($id);
 					$data["success"] = true; 
 					$data["status"] = 201;
+					//if ($url = valider("url"))
 				}
 			break; 
 
-			case 'POST_lists' :
-				// POST /api/lists?label=...
-				if ($label = valider("label")) {
-					$id = mkList($connectedId, $label); 
-					$data["list"] = getList($id);
-					$data["success"] = true; 
-					$data["status"] = 201;
-				}
-			break;
 
 			case 'PUT_authenticate' : 
 				// régénère un hash ? 
@@ -270,7 +262,8 @@ if (valider("request")) {
 			break; 
 
 			case 'PUT_users' :
-				// PUT  /api/users/<id>?pass=...
+				// todo verify the connected id is the user of the entite
+				// PUT  /AR-design/api/users/<id>?pass=...
 				if ($idEntite1)
 				if ($pass = valider("pass")) {
 					if (chgPassword($idEntite1,$pass)) {
@@ -283,13 +276,32 @@ if (valider("request")) {
 				}
 			break; 
 
-			case 'PUT_users_lists' : 
-				// PUT /api/users/<id>/lists/<id>?label=...
+			case 'PUT_users_furnitures2' :
+				// todo verify the connected id is the user of the entite
+				// PUT  /AR-design/api/users/<id>/furnitures/1?width=...
 				if ($idEntite1)
 				if ($idEntite2)
-				if ($label = valider("label")) {
-					if (chgListLabel($idEntite2,$label,$idEntite1)) {
-						$data["list"] = getList($idEntite2);
+				if ($width = valider("width")) {
+					if (chgWidthFurniture($idEntite2, $idEntite1,$width)) {
+						$data["furniture"] = getFurniture($idEntite2, $idEntite1);
+						$data["success"] = true; 
+						$data["status"] = 200;
+					} else {
+						// erreur 
+					}
+				}
+			break; 
+
+					
+			case 'PUT_users_furnitures' : 
+				// PUT /AR-design/api/users/<id>/furnitures/<id>?width=&height=...
+				if ($idEntite1) 
+				if ($idEntite2) {
+					$width = valider("width");
+					$height = valider("height");
+					$length = valider("length");   
+					if (chgFurniture($idEntite2,$idEntite1, $width, $height, $length)) {
+						$data["furniture"] = getFurniture($idEntite2, $idEntite1);
 						$data["success"] = true; 
 						$data["status"] = 200;
 					} else {
@@ -297,69 +309,41 @@ if (valider("request")) {
 					}
 				}
 			break; 
-
-			case 'PUT_lists' : 
-				// PUT /api/lists/<id>?label=...
-				if ($idEntite1)
-				if ($label = valider("label")) {
-					if (chgListLabel($idEntite1,$label,$connectedId)) {
-						$data["list"] = getList($idEntite1);
-						$data["success"] = true; 
-						$data["status"] = 200;
-					} else {
-						// erreur
-					}
-				}
-			break; 
-
-			case 'PUT_lists_items' : 
-				// PUT /api/lists/<id>/items/<id>?label=...
-				if ($idEntite1)
-				if ($idEntite2)
-				if ($label = valider("label")) {
-					if (chgItemLabel($idEntite2,$label,$idEntite1)) {
-						$data["item"] = getItem($idEntite2,$idEntite1);
-						$data["success"] = true; 
-						$data["status"] = 200;
-					} else {
-						// erreur
-					}
-				}
-
-				// PUT /api/lists/<id>/items/<id>?url=...
-				if ($idEntite1)
-				if ($idEntite2)
-				if ($url = valider("url")) {
-					if (chgItemUrl($idEntite2,$url,$idEntite1)) {
-						$data["item"] = getItem($idEntite2,$idEntite1);
-						$data["success"] = true;
-						$data["status"] = 200; 
-					} else {
-						// erreur
-					}
-				}
-
-				// PUT /api/lists/<id>/items/<id>?check=0|1
+				
+			
+			case 'PUT_users_walls' : 
+				// PUT /AR-design/api/users/<id>/walls/<id>?width=&height=...
 				if ($idEntite1)
 				if ($idEntite2){
-					$check = valider("check"); 	// 0 est valide !
-					if ($check !== false) {		// false, non...
-						$check =intval($check); 
-						if (is_check($check)) {
-							if (checkItem($idEntite2,$idEntite1, $check)) {
-								$data["item"] = getItem($idEntite2,$idEntite1);
-								$data["success"] = true;
-								$data["status"] = 200;
-							} else {
-								// erreur
-							}
-						}
+					$width = valider("width");
+				    $height = valider("height");
+					if (chgWall($idEntite2, $idEntite1, $width, $height)) {
+						$data["wall"] = getWall($idEntite2);
+						$data["success"] = true; 
+						$data["status"] = 200;
+					} else {
+						// erreur
 					}
 				}
-			break;
+			break; 
+				
+				
+			case 'PUT_standardFurniture' : 
+				// PUT /AR-design/api/standardFurnitures/<id>?url=
+				if ($idEntite1)
+				if ($url= valider("url")){
+					if (chgStandardFurnitureUrl($id, $url)) {
+						$data["standardFrniture"] = getStandardFurniture($idEntite1);
+						$data["success"] = true; 
+						$data["status"] = 200;
+					} else {
+						// erreur
+					}
+				}
+			break; 
 
 			case 'DELETE_users' : 
-				// DELETE /api/users/<id> 
+				// DELETE /AR-design/api/users/<id> 
 				if ($idEntite1) {
 					if (rmUser($idEntite1)) {
 						$data["success"] = true;
@@ -370,11 +354,11 @@ if (valider("request")) {
 				}
 			break; 
 
-			case 'DELETE_users_lists' : 
-				// DELETE /api/users/<id>/lists/<id>
+			case 'DELETE_users_furnitures' : 
+				// DELETE /AR-design/api/users/<id>/furnitures/<id>
 				if ($idEntite1)
 				if ($idEntite2) {
-					if (rmList($idEntite2, $idEntite1)) {				
+					if (rmFurniture($idEntite2, $idEntite1)) {				
 						$data["success"] = true;
 						$data["status"] = 200; 
 					} else {
@@ -383,25 +367,25 @@ if (valider("request")) {
 				}
 			break; 
 
-			case 'DELETE_lists' : 
-				// DELETE /api/lists/<id>
+			case 'DELETE_users_walls' : 
+				// DELETE /AR-design/api/users/<id>/furnitures/<id>
+				if ($idEntite1)
+				if ($idEntite2) {
+					if (rmWall($idEntite2, $idEntite1)) {				
+						$data["success"] = true;
+						$data["status"] = 200; 
+					} else {
+						// erreur 
+					}
+				}
+			break; 
+
+			case 'DELETE_standardFurnitures' : 
+				// DELETE /api/standardFurnitures/<id>
 				if ($idEntite1) {
-					if (rmList($idEntite1, $connectedId)) {				
+					if (rmStandardFurniture($idEntite1)) {				
 						$data["success"] = true;
 						$data["status"] = 200; 
-					} else {
-						// erreur 
-					}
-				}
-			break; 
-
-			case 'DELETE_lists_items' : 
-				// DELETE /api/lists/<id>/items/<id>
-				if ($idEntite1)
-				if ($idEntite2) {
-					if (rmItem($idEntite2, $idEntite1)) {				
-						$data["success"] = true;
-						$data["status"] = 200;  
 					} else {
 						// erreur 
 					}
