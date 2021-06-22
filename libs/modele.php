@@ -8,7 +8,8 @@ include_once("maLibSQL.pdo.php");
 function validerUser($pseudo, $pass){
 	$SQL = "SELECT id FROM users WHERE pseudo='$pseudo' AND pass='$pass'";
 	if ($id=SQLGetChamp($SQL))
-		return getHash($id);
+		//return getHash($id);
+		return getUser($id);
 	else return false;
 }
 
@@ -28,7 +29,7 @@ function getUsers(){
 }
 
 function getUser($idUser){
-	$SQL = "SELECT id,pseudo FROM users WHERE id='$idUser'";
+	$SQL = "SELECT * FROM users WHERE id='$idUser'";
 	$rs = parcoursRs(SQLSelect($SQL));
 	if (count($rs)) return $rs[0]; 
 	else return array();
@@ -74,12 +75,12 @@ function chgPassword($idUser,$pass) {
 
 
 function getFurnitures(){
-	$SQL = "SELECT f.id, u.pseudo, f.width, f.height, f.length FROM furnitures f INNER JOIN users u ON f.idUser = u.id"; 
+	$SQL = "SELECT * FROM furnitures"; 
 	return parcoursRs(SQLSelect($SQL));
 }
 
 function getFurniture($id,$idUser=false){
-	$SQL = "SELECT id, width, height, length FROM furnitures WHERE id='$id'"; 
+	$SQL = "SELECT * FROM furnitures WHERE id='$id'"; 
 	if ($idUser)
 		$SQL .= " AND idUser='$idUser'"; 
 	$rs = parcoursRs(SQLSelect($SQL));

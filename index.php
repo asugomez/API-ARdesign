@@ -93,14 +93,25 @@ if (valider("request")) {
 	if ($action == "POST_authenticate") {
 		if ($user = valider("user"))
 		if ($password = valider("password")) {
-			if ($hash = validerUser($user, $password)) {
-				$data["hash"] = $hash;
+			if ($user_data = validerUser($user, $password)) {
+				$data["user"] = $user_data;
 				$data["success"] = true;
 				$data["status"] = 202;
 			} else {
 				// connexion échouée
 				$data["status"] = 401;
 			}
+		}
+	}
+	if ($action =="POST_users"){
+		// POST /AR-design/api/users?pseudo=&pass=&mail...
+		if ($pseudo = valider("pseudo"))
+		if ($pass = valider("password")) 
+		if ($mail = valider("mail")){
+			$id = mkUser($pseudo, $mail,$pass); 
+			$data["user"] = getUser($id);
+			$data["success"] = true;
+			$data["status"] = 201;
 		}
 	}
 	elseif ($connected)
@@ -199,17 +210,7 @@ if (valider("request")) {
 			
 			// POST 
 
-			case 'POST_users' : 
-				// POST /AR-design/api/users?pseudo=&pass=&mail...
-				if ($pseudo = valider("pseudo"))
-				if ($pass = valider("password")) 
-				if ($mail = valider("mail")){
-					$id = mkUser($pseudo, $mail,$pass); 
-					$data["user"] = getUser($id);
-					$data["success"] = true;
-					$data["status"] = 201;
-				}
-			break; 
+			
 
 			case 'POST_users_furnitures' :
 				// POST /AR-design/api/users/<id>/furnitures?width=&height=&legnth=...
