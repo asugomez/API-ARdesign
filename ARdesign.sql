@@ -31,12 +31,13 @@ CREATE TABLE `furnitures` (
   `idUser` int(11) NOT NULL,
   `width` varchar(100) NOT NULL,
   `height` varchar(100) NOT NULL,
-  `length` varchar(100) NOT NULL
+  `length` varchar(100) NOT NULL,
+  `nom` varchar(100)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `furnitures` (`id`, `idUser`, `width`, `height`, `length`) VALUES
-(1, 1, '60', '40', '120'),
-(2, 1, '30', '200', '200');
+INSERT INTO `furnitures` (`id`, `idUser`, `width`, `height`, `length`, `nom`) VALUES
+(1, 1, '60', '40', '120', 'Table'),
+(2, 1, '30', '200', '200', 'Chaise');
 
 -- --------------------------------------------------------
 
